@@ -1,40 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import MenuComponent from './nav/nav.component';
-import { BannerComponent } from './banner/banner.component';
+import AdminNavComponent from './core/layout/nav/admin-nav.component';
+import { BannerComponent } from './core/layout/banner/banner.component';
+import { AuthService } from './core/auth/auth.service';
+
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet, MenuComponent, BannerComponent],
-  template: `
-    <div class="secondary text-white p-4">Tailwind test</div>
+	selector: 'app-root',
+	imports: [RouterOutlet, AdminNavComponent, BannerComponent],
+	template: `
+	<div class="min-h-screen bg-surface-100">
+		<app-banner />
+		@switch (role()) {
+			@case('admin'){
+				<app-admin-nav class="  "/>
+			}
+		}
+		<router-outlet />
 
-    <div class="main flex w-full h-full">
-      <div class="test1"></div>
-      <div class="test2"></div>
-    </div>
+	</div>
 
-    <!-- <app-banner /> -->
-    <!-- 
-    <app-menu />
-
-    <router-outlet /> -->
-  `,
-  styles: [
-    `
-      .main {
-        background-color: red;
-      }
-      .test1 {
-        background-color: purple;
-      }
-
-      .test2 {
-        background-color: green;
-      }
-    `,
-  ],
+	`,
+	styles: [``],
 })
 export class AppComponent {
-  title = 'Wattsup';
+	// private auth = inject(AuthService);
+  role = computed(() => 'admin');
 }
