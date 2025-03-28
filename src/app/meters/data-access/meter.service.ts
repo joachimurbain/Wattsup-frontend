@@ -23,7 +23,7 @@ export class MeterService extends EntityStateService<Meter> {
 	});
 
 	constructor(httpClient: HttpClient) {
-		super(httpClient, 'Store');
+		super(httpClient, 'store');
 
 		this.getByStoreId$
 			.pipe(
@@ -34,7 +34,7 @@ export class MeterService extends EntityStateService<Meter> {
 					}
 
 					this.currentStoreId.set(storeId);
-					const url = `${environment.apiUrl}/stores/${storeId}/meters`;
+					const url = `${environment.apiUrl}store/${storeId}/meters`;
 
 					return this.httpClient.get<Meter[]>(url);
 				})

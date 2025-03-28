@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 
@@ -12,11 +12,13 @@ export default class AdminNavComponent {
 	items: MenuItem[] = [
 		{
 			label: 'Dashboard',
-			icon: 'pi pi-chart-line', // For an overview/analytics dashboard
+			icon: 'pi pi-chart-line', // For an overview/analytics dashboard,
+			routerLink: 'dashboard',
 		},
 		{
 			label: 'Stores',
 			icon: 'pi pi-building', // Represents locations/stores
+			routerLink: 'stores',
 		},
 		{
 			label: 'Meters',
