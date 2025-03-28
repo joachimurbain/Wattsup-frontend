@@ -2,16 +2,16 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MeterService } from '../../../meters/data-access/meter.service';
-import { Meter } from '../../../meters/data-access/meter.model';
+import { MeterService } from '../../../../meters/data-access/meter.service';
+import { Meter } from '../../../../meters/data-access/meter.model';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { MeterTableComponent } from '../../../meters/ui/meter-table.component';
-import { PTableColumn } from '../../../shared/interfaces/ptable-column';
-import { HeaderComponent } from "../../../shared/ui/header/header.component";
+import { MeterTableComponent } from '../../../../meters/meter-list/ui/meter-table.component';
+import { PTableColumn } from '../../../../shared/interfaces/ptable-column';
+import { HeaderComponent } from "../../../../shared/ui/header/header.component";
 import { DialogModule } from 'primeng/dialog';
-import { ModalComponent } from "../../../shared/ui/modal/modal.component";
+import { ModalComponent } from "../../../../shared/ui/modal/modal.component";
 
 @Component({
 	standalone: true,

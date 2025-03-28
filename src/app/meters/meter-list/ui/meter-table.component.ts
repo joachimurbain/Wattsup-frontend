@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, input, output, ViewChild } from '@angular/core';
 import { MessageModule } from 'primeng/message';
 import { TableModule } from 'primeng/table';
-import { Meter } from '../data-access/meter.model';
+import { Meter } from '../../data-access/meter.model';
 import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
 import { SplitButtonModule } from 'primeng/splitbutton';

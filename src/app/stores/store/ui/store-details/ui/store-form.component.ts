@@ -1,6 +1,6 @@
 import { Component, input, output, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ValidationComponent } from '../../../shared/ui/validation/validation.component';
+import { ValidationComponent } from '../../../../../shared/ui/validation/validation.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';

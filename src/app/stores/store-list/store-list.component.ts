@@ -22,7 +22,7 @@ import { StoreService } from '../data-access/store.service';
 	`,
 	styles: ``,
 })
-export default class StoresListComponent {
+export default class StoreListComponent {
 	router = inject(Router);
 	storeService = inject(StoreService);
 

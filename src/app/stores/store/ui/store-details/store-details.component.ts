@@ -1,12 +1,13 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StoreService } from '../../data-access/store.service';
+import { StoreService } from '../../../data-access/store.service';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { StoreFormComponent } from './store-form.component';
+
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CardModule } from 'primeng/card';
+import { StoreFormComponent } from './ui/store-form.component';
 
 @Component({
 	selector: 'app-store-details',
