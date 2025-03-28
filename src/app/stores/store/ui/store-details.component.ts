@@ -6,11 +6,17 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { StoreFormComponent } from './store-form.component';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { CardModule } from 'primeng/card';
 
 @Component({
 	selector: 'app-store-details',
-	imports: [DialogModule, ProgressSpinnerModule, StoreFormComponent],
+	imports: [DialogModule, ProgressSpinnerModule, StoreFormComponent,CardModule],
 	template: `
+
+
+
+		<h1 class="text-xl font-bold mb-8">Store Information</h1>
+
 		<app-store-form [form]="form" [isEdit]="isEdit()" [disabled]="isLoading()" (submitForm)="onSubmit()" />
 
 		<p-dialog
@@ -61,10 +67,6 @@ export default class StoreDetailsComponent {
 				this.form.patchValue(data);
 			}
 		});
-
-		if (this.isEdit()) {
-			this.storeService.getOne$.next(Number(this.storeId()));
-		}
 	}
 
 	onSubmit() {

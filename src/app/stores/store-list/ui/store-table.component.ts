@@ -24,7 +24,8 @@ import { MessageModule } from 'primeng/message';
 					<!-- prettier-ignore -->
 					@case ('status'){
 					<td>
-						<p-message [severity]="rowData.isActive ? 'success' : 'warn'" size="small">{{
+						{{rowData.isActive}}
+						<p-message [severity]="rowData.isActive ? 'success' : 'warn'" size="small" styleClass="statusCol">{{
 							rowData.isActive ? 'Active' : 'Inactive'
 						}}</p-message>
 					</td>

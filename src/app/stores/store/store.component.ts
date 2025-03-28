@@ -17,14 +17,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
 					<p-tabs [value]="currentUrl()">
 						<p-tablist>
 							@for (tab of tabs; track tab.routerLink) {
-							<p-tab [value]="tab.routerLink" [routerLink]="tab.routerLink">
+							<p-tab [value]="tab.routerLink" [routerLink]="tab.routerLink" [hidden]="tab.disabled">
 								<i [class]="tab.icon" class="mr-1"></i>
 								{{ tab.label }}
 							</p-tab>
 							}
 						</p-tablist>
 					</p-tabs>
-					<div class="pt-4">
+					<div class="pt-0">
 						<router-outlet />
 					</div>
 				</div>
@@ -39,7 +39,10 @@ export default class StoreComponent {
 
 	params = toSignal(this.route.paramMap);
 
-	storeId = computed(() => Number(this.params()?.get('storeId')));
+	storeId = computed(() => {
+		return this.params()?.get('storeId') === 'new' ? null : Number(Number(this.params()?.get('storeId')));
+	});
+	isNew = computed(() => this.params()?.get('storeId') === 'new' );
 
 	currentUrl = computed(() => this.router.url.split('/').pop()!);
 
@@ -48,21 +51,27 @@ export default class StoreComponent {
 			label: 'Details',
 			icon: PrimeIcons.INFO_CIRCLE,
 			routerLink: 'details',
+			disabled:false
 		},
 		{
 			label: 'Meters',
 			icon: PrimeIcons.BOLT,
 			routerLink: 'meters',
+			disabled:this.isNew()
 		},
 		{
 			label: 'Requests',
 			icon: PrimeIcons.ENVELOPE,
 			routerLink: 'requests',
+			disabled:this.isNew()
+
 		},
 		{
 			label: 'Alerts',
 			icon: PrimeIcons.EXCLAMATION_TRIANGLE,
 			routerLink: 'alerts',
+			disabled:this.isNew()
+
 		},
 	];
 }

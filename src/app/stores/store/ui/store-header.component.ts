@@ -8,7 +8,6 @@ import { MenuItem } from 'primeng/api';
 	imports: [BreadcrumbModule],
 	template: `
 		<div class="bg-white border border-gray-200 rounded-xl px-6 py-4 mb-6">
-			@if (store(); as s) {
 			<div class="space-y-2">
 				<div>
 					<p-breadcrumb
@@ -16,26 +15,38 @@ import { MenuItem } from 'primeng/api';
 						styleClass="!bg-transparent !border-none !shadow-none p-0 text-sm text-gray-500"
 					/>
 				</div>
-
-				<h1 class="text-xl font-semibold text-gray-800 leading-snug">
+				@if (store(); as s) {
+				<h1 class="text-xl font-semibold text-gray-800">
 					{{ s.name }}
 					<span class="text-gray-500 font-normal text-base">– {{ s.address }}</span>
 				</h1>
+				}@else {
+					<h1 class="text-xl font-semibold text-gray-800">Create Store</h1>
+				}
 			</div>
-			}
 		</div>
 	`,
 	styles: ``,
 })
 export class StoreHeaderComponent {
 	private storeService = inject(StoreService);
-	storeId = input.required<number>();
+	storeId = input.required<number | null>();
 
-	store = computed(() => this.storeService.fullItems()[this.storeId()]);
+	store = computed(() => {
+		const storeId = this.storeId();
+		return storeId !== null ? this.storeService.fullItems()[storeId] : null;
+	});
 
 	breadcrumbItems = computed<MenuItem[]>(() => {
+		const base = [{ label: 'Stores', routerLink: '/stores' }];
+
 		const store = this.store();
-		return [{ label: 'Stores', routerLink: '/admin/stores' }, ...(store ? [{ label: store.name }] : [])];
+		if (store) {
+			return store ? [...base, { label: store.name }] : base;
+		}else{
+			return [...base, { label: 'Create Store' }];
+		}
+
 	});
 
 	constructor() {

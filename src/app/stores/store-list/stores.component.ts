@@ -30,8 +30,8 @@ export default class StoresListComponent {
 
 	columns = [
 		{ field: 'name', header: 'Name' },
-		{ field: 'address', header: 'Address' },
-		{ field: 'surfaceArea', header: 'Surface (m²)' },
+		{ field: 'storeCode', header: 'PCode' },
+		{ field: 'city', header: 'City' },
 		{ field: 'status', header: 'Status' },
 	];
 

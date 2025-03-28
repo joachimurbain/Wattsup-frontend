@@ -10,3 +10,10 @@
 @layer tailwind {
   @import "tailwindcss";
 } */
+.statusCol .p-message-content{
+	justify-content: center;
+}
+
+.text-red-600 .p-menu-item-icon, .text-red-600 .p-menu-item-label {
+ color: var(--color-red-600);
+}
