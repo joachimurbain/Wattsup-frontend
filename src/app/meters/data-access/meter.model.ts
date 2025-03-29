@@ -11,7 +11,7 @@ export interface Meter extends BaseEntity {
 export type MeterLight = BaseEntity & Partial<Meter>;
 
 export enum MeterType {
-	electricity,
-	gas,
-	water,
+	Electricity = 'Electricity',
+	Gas = 'Gas',
+	Water = 'Water',
 }

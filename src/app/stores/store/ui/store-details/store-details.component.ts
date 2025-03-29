@@ -11,12 +11,9 @@ import { StoreFormComponent } from './ui/store-form.component';
 
 @Component({
 	selector: 'app-store-details',
-	imports: [DialogModule, ProgressSpinnerModule, StoreFormComponent,CardModule],
+	imports: [DialogModule, ProgressSpinnerModule, StoreFormComponent, CardModule],
 	template: `
-
-
-
-		<h1 class="text-xl font-bold mb-8">Store Information</h1>
+		<h1 class="text-xl font-bold  p-4 mb-4">Store Information</h1>
 
 		<app-store-form [form]="form" [isEdit]="isEdit()" [disabled]="isLoading()" (submitForm)="onSubmit()" />
 
@@ -46,10 +43,7 @@ export default class StoreDetailsComponent {
 	storeId = computed(() => this.parentParams()?.get('storeId'));
 	isEdit = computed(() => this.storeId() !== 'new');
 
-	store = computed(() => {
-		const id = Number(this.storeId());
-		return this.isEdit() ? this.storeService.fullItems()[id] : null;
-	});
+	store = computed(() => this.storeService.fullItems()[Number(this.storeId())]);
 
 	form: FormGroup = this.fb.group({
 		name: [null, Validators.required],
@@ -64,6 +58,8 @@ export default class StoreDetailsComponent {
 	constructor() {
 		effect(() => {
 			const data = this.store();
+
+			debugger;
 			if (data) {
 				this.form.patchValue(data);
 			}
@@ -91,7 +87,7 @@ export default class StoreDetailsComponent {
 
 		setTimeout(() => {
 			this.isLoading.set(false);
-			this.router.navigate(['/admin/stores']);
+			this.router.navigate(['/stores']);
 		}, 2000);
 	}
 }

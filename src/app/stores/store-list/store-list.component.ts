@@ -12,13 +12,15 @@ import { StoreService } from '../data-access/store.service';
 	selector: 'app-stores-list',
 	imports: [CardModule, ButtonModule, StoreTableComponent, HeaderComponent],
 	template: `
-		<p-card class="shadow-sm">
-			<ng-content #header>
-				<app-header [title]="'Stores'" (onCreateNew)="onCreateNew()"></app-header>
-			</ng-content>
+		<div class="p-4 max-w-6xl mx-auto">
+			<p-card class="shadow-sm ">
+				<ng-content #header>
+					<app-header [title]="'Stores'" (onCreateNew)="onCreateNew()"></app-header>
+				</ng-content>
 
-			<app-store-table #body [stores]="stores()" [columns]="columns" (edit)="onEdit($event)"> </app-store-table>
-		</p-card>
+				<app-store-table #body [stores]="stores()" [columns]="columns" (edit)="onEdit($event)"> </app-store-table>
+			</p-card>
+		</div>
 	`,
 	styles: ``,
 })

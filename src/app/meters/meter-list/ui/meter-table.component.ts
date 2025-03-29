@@ -7,10 +7,11 @@ import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { Menu, MenuModule } from 'primeng/menu';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'app-meter-table',
-	imports: [TableModule, MessageModule, CommonModule, ButtonModule, SplitButtonModule,MenuModule],
+	imports: [TableModule, MessageModule, CommonModule, ButtonModule, SplitButtonModule, MenuModule],
 	template: `
 		<p-table [value]="meters()" [columns]="columns()" dataKey="id" class="p-datatable-sm">
 			<ng-template #caption>
@@ -58,23 +59,16 @@ import { Menu, MenuModule } from 'primeng/menu';
 					} @case ('actions') {
 					<td class="text-right space-x-2" (click)="$event.stopPropagation()">
 						@if(!rowData.deactivationDate){
-						<!-- Download QR -->
-						<!-- <p-button icon="pi pi-download" class=" " (click)="downloadQr.emit(rowData)" /> -->
+						<p-menu
+							[tabindex]="undefined"
+							#menu
+							[model]="(dynamicMenuItems$ | async)!"
+							(onShow)="showMenu(rowData)"
+							[popup]="true"
+							appendTo="body"
+						/>
 
-						<!-- Terminate -->
-						<!-- <p-button icon="pi pi-power-off" class=" p-button-danger" (click)="terminateMeter.emit(rowData)" /> -->
-
-
-
-
-
-						<p-menu #menu [model]="rowMenuItems(rowData)" [popup]="true" appendTo="body" />
-
-<p-button
-	icon="pi pi-ellipsis-v"
-	class="p-button-text p-button-sm"
-	(click)="menu.toggle($event)"
-/>
+						<p-button severity="info" icon="pi pi-ellipsis-v" class=" p-button-sm" (click)="menu.toggle($event)" />
 						}
 					</td>
 					} @default {
@@ -102,8 +96,10 @@ export class MeterTableComponent {
 	terminateMeter = output<Meter>();
 	downloadQr = output<Meter>();
 
-	rowMenuItems = (meter: Meter): MenuItem[] => {
-		const actions: MenuItem[] = [
+	public dynamicMenuItems$: BehaviorSubject<MenuItem[]> = new BehaviorSubject([] as MenuItem[]);
+
+	public showMenu(meter: Meter): void {
+		this.dynamicMenuItems$.next([
 			{
 				label: 'Download QR',
 				icon: 'pi pi-download',
@@ -113,9 +109,8 @@ export class MeterTableComponent {
 				label: 'Terminate',
 				icon: 'pi pi-power-off',
 				command: () => this.terminateMeter.emit(meter),
-				styleClass: 'text-red-600'
+				styleClass: 'text-red-600',
 			},
-		];
-		return actions;
-	};
+		]);
+	}
 }
