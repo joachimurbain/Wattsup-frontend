@@ -56,8 +56,8 @@ export default class StoreMeterListComponent {
 		this.router.navigate(['new'], { relativeTo: this.route });
 	}
 
-	openReadings($event: Meter) {
-		throw new Error('Method not implemented.');
+	openReadings(meter: Meter) {
+		this.router.navigate([meter.id], { relativeTo: this.route });
 	}
 
 	openTerminate(meter: Meter) {

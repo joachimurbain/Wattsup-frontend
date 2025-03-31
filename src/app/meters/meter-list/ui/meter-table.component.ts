@@ -27,11 +27,7 @@ import { BehaviorSubject } from 'rxjs';
 					@for (col of columns; track $index) {
 					<th
 						[ngClass]="
-							col.header === 'Status'
-								? 'text-center w-1/5 text-center'
-								: col.field === 'actions'
-								? 'text-right w-1/8'
-								: ''
+							col.header === 'Status' ? 'text-center w-1/5' : col.field === 'actions' ? 'text-right w-1/8' : ''
 						"
 					>
 						{{ col.header }}
@@ -78,13 +74,6 @@ import { BehaviorSubject } from 'rxjs';
 			</ng-template>
 		</p-table>
 	`,
-	styles: [
-		`
-			.test .p-message-text {
-				color: red !important;
-			}
-		`,
-	],
 })
 export class MeterTableComponent {
 	@ViewChild('menu') menu!: Menu;

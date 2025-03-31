@@ -6,7 +6,7 @@ import { Subject, BehaviorSubject, switchMap, map, EMPTY, tap, finalize, exhaust
 import { CrudApiService } from './crud-api.service';
 import { BaseEntity } from './base-entity.model';
 
-interface EntityState<T extends BaseEntity, TLight = BaseEntity & Partial<T>> {
+export interface EntityState<T extends BaseEntity, TLight = BaseEntity & Partial<T>> {
 	summaries: TLight[];
 	fullItems: Record<number, T>;
 	error: string | null;
@@ -15,6 +15,9 @@ interface EntityState<T extends BaseEntity, TLight = BaseEntity & Partial<T>> {
 export abstract class EntityStateService<T extends BaseEntity> {
 	private _apiService: CrudApiService<T>;
 	private loadingIds = new Set<number>();
+
+	//posthooks
+	lastUpdated = signal<Partial<T> | null>(null);
 
 	// state
 	protected state = signal<EntityState<T>>({
@@ -55,7 +58,7 @@ export abstract class EntityStateService<T extends BaseEntity> {
 				next: (items) =>
 					this.state.update((state) => ({
 						...state,
-						summaries: items,
+						summaries: items.map((item) => this.mapFromApi(item)),
 						error: null,
 					})),
 				error: (err) => this.error$.next(err),
@@ -105,7 +108,7 @@ export abstract class EntityStateService<T extends BaseEntity> {
 						...state,
 						fullItems: {
 							...state.fullItems,
-							[item.id]: item,
+							[item.id]: this.mapFromApi(item),
 						},
 						error: null,
 					})),
@@ -123,7 +126,7 @@ export abstract class EntityStateService<T extends BaseEntity> {
 						...state,
 						fullItems: {
 							...state.fullItems,
-							[newItem.id]: newItem,
+							[newItem.id]: this.mapFromApi(newItem),
 						},
 						error: null,
 					}));
@@ -144,11 +147,12 @@ export abstract class EntityStateService<T extends BaseEntity> {
 						...state,
 						fullItems: {
 							...state.fullItems,
-							[updatedItem.id]: updatedItem,
+							[updatedItem.id]: this.mapFromApi(updatedItem),
 						},
 						summaries: state.summaries.map((p) => (p.id === updatedItem.id ? updatedItem : p)),
 						error: null,
 					}));
+					this.lastUpdated.set(updatedItem);
 					this.getAll$.next();
 				},
 				error: (err) => this.error$.next(err),
@@ -179,5 +183,9 @@ export abstract class EntityStateService<T extends BaseEntity> {
 			}
 		}
 		return result;
+	}
+
+	protected mapFromApi(item: T): T {
+		return item;
 	}
 }

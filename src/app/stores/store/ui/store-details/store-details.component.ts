@@ -58,8 +58,6 @@ export default class StoreDetailsComponent {
 	constructor() {
 		effect(() => {
 			const data = this.store();
-
-			debugger;
 			if (data) {
 				this.form.patchValue(data);
 			}

@@ -39,10 +39,10 @@ export const STORE_ROUTES: Routes = [
 				path: 'meters/new',
 				loadComponent: () => import('./store/ui/store-meter-create/store-meter-create.component'),
 			},
-			// {
-			// 	path: 'meters/:meterId',
-			// 	loadComponent: () => import('./store/ui/store-meter-readings/store-meter-readings.component'),
-			// },
+			{
+				path: 'meters/:meterId',
+				loadComponent: () => import('../meter-readings/meter-reading-list/meter-reading-list.component'),
+			},
 		],
 	},
 ];
