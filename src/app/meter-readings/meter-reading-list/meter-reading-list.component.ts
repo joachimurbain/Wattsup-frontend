@@ -14,8 +14,8 @@ import { MenuItem } from 'primeng/api';
 		<app-meter-reading-table
 			[readings]="readings()"
 			[columns]="columns()"
-			(edit)="onEdit($event)"
-			(delete)="onDelete($event)"
+			(edit)="this.meterReadingService.update$.next($event)"
+			(delete)="meterReadingService.delete$.next($event.id)"
 		/>
 	`,
 	styles: `
@@ -24,7 +24,7 @@ import { MenuItem } from 'primeng/api';
 })
 export default class MeterReadingsComponent {
 	private route = inject(ActivatedRoute);
-	private meterReadingService = inject(MeterReadingService);
+	meterReadingService = inject(MeterReadingService);
 
 	meterId = toSignal(
 		this.route.paramMap.pipe(
@@ -51,12 +51,5 @@ export default class MeterReadingsComponent {
 				this.meterReadingService.getByMeterId$.next(meterId);
 			}
 		});
-	}
-
-	onDelete($event: MeterReading) {
-		throw new Error('Method not implemented.');
-	}
-	onEdit(meterReading: MeterReading) {
-		this.meterReadingService.update$.next(meterReading);
 	}
 }

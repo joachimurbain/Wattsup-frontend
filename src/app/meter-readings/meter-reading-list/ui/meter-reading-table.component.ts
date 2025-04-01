@@ -9,6 +9,7 @@ import { MeterReading } from '../../data-access/meter-reading.model';
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { DatePickerModule } from 'primeng/datepicker';
+import { MeterService } from '../../../meters/data-access/meter.service';
 
 @Component({
 	selector: 'app-meter-reading-table',
@@ -77,7 +78,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 								icon="pi pi-times"
 								rounded
 								severity="secondary"
-								(click)="onRowEditCancel(reading, ri)"
+								(click)="onRowEditCancel(reading)"
 							/>
 							} @else {
 							<p-button
@@ -115,17 +116,15 @@ export class MeterReadingTableComponent {
 	}
 
 	getRowModel(reading: MeterReading): MeterReading {
-		console.log(reading.readingDate.getFullYear());
 		return this.clonedReadings[reading.id];
 	}
 
 	onRowEditSave(reading: MeterReading) {
-		debugger;
 		this.edit.emit(this.clonedReadings[reading.id]);
 		delete this.clonedReadings[reading.id];
 	}
 
-	onRowEditCancel(reading: MeterReading, index: number) {
+	onRowEditCancel(reading: MeterReading) {
 		delete this.clonedReadings[reading.id];
 	}
 }
