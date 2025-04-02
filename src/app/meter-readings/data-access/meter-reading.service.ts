@@ -17,7 +17,6 @@ export class MeterReadingService extends EntityStateService<MeterReading> {
 		summaries: [],
 		fullItems: {},
 		readingsByMeter: {},
-		error: null,
 	});
 
 	getByMeterId$ = new Subject<number>();
@@ -39,7 +38,7 @@ export class MeterReadingService extends EntityStateService<MeterReading> {
 							...state,
 							readingsByMeter: {
 								...state.readingsByMeter,
-								[meterId]: readings.map((item) => this.mapFromApi(item)),
+								[meterId]: readings,
 							},
 							error: null,
 						}));
@@ -55,21 +54,17 @@ export class MeterReadingService extends EntityStateService<MeterReading> {
 			});
 
 		effect(() => {
-			const updated = this.lastUpdated();
-			if (!updated) {
-				return;
-			}
-			const meterId = updated.meterId;
-			if (meterId) {
-				this.getByMeterId$.next(meterId);
+			const item = this.updated() || this.created();
+			if (item) {
+				this.getByMeterId$.next(item.meterId);
 			}
 		});
 	}
 
-	protected override mapFromApi(reading: MeterReading): MeterReading {
-		return {
-			...reading,
-			readingDate: new Date(reading.readingDate + 'Z'),
-		};
-	}
+	// protected override mapFromApi(reading: MeterReading): MeterReading {
+	// 	return {
+	// 		...reading,
+	// 		readingDate: new Date(reading.readingDate),
+	// 	};
+	// }
 }

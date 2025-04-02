@@ -10,7 +10,6 @@ export class CrudApiService<T extends BaseEntity> {
 
 	constructor(private _httpClient: HttpClient, api_endpoint: string) {
 		this.apiUrl = environment.apiUrl + api_endpoint;
-		console.log(this.apiUrl);
 	}
 
 	public getAll(): Observable<T[]> {

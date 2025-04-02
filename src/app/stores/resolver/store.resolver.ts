@@ -7,7 +7,7 @@ export const storeResolver: ResolveFn<boolean> = (route, state) => {
 	const storeId = Number(route.paramMap.get('storeId'));
 
 	if (storeId) {
-		storeService.getOne$.next(storeId);
+		storeService.loadOne(storeId);
 	}
 
 	return true;

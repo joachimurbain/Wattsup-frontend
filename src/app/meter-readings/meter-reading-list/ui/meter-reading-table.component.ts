@@ -56,7 +56,7 @@ import { MeterService } from '../../../meters/data-access/meter.service';
 								/>
 							</ng-template>
 							<ng-template #output>
-								{{ reading.readingDate | date : 'dd/MM/YYYY' }}
+								{{ reading.readingDate | date : 'dd/MM/YYYY HH:mm' }}
 							</ng-template>
 						</p-cellEditor>
 					</td>

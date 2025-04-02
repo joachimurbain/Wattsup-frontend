@@ -15,8 +15,8 @@ import { MeterService } from '../../meters/data-access/meter.service';
 		<app-meter-reading-table
 			[readings]="readings()"
 			[columns]="columns()"
-			(edit)="this.meterReadingService.update$.next($event)"
-			(delete)="meterReadingService.delete$.next($event.id)"
+			(edit)="this.meterReadingService.update($event)"
+			(delete)="meterReadingService.delete($event.id)"
 		/>
 	`,
 	styles: `

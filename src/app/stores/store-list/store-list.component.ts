@@ -38,7 +38,7 @@ export default class StoreListComponent {
 	];
 
 	constructor() {
-		this.storeService.getAll$.next();
+		this.storeService.loadAll();
 		this.stores = this.storeService.summaries;
 	}
 

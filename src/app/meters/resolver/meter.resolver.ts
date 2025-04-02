@@ -7,7 +7,7 @@ export const meterResolver: ResolveFn<boolean> = (route, state) => {
 	const meterId = Number(route.paramMap.get('meterId'));
 
 	if (meterId) {
-		meterService.getOne$.next(meterId);
+		meterService.loadOne(meterId);
 	}
 
 	return true;

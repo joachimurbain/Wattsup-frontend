@@ -62,6 +62,13 @@ export default class StoreDetailsComponent {
 				this.form.patchValue(data);
 			}
 		});
+
+		effect(() => {
+			if (this.storeService.created() || this.storeService.updated()) {
+				this.isLoading.set(false);
+				this.router.navigate(['/stores']);
+			}
+		});
 	}
 
 	onSubmit() {
@@ -78,14 +85,9 @@ export default class StoreDetailsComponent {
 		};
 
 		if (this.isEdit()) {
-			this.storeService.update$.next(payload);
+			this.storeService.update(payload);
 		} else {
-			this.storeService.create$.next(payload);
+			this.storeService.create(payload);
 		}
-
-		setTimeout(() => {
-			this.isLoading.set(false);
-			this.router.navigate(['/stores']);
-		}, 2000);
 	}
 }

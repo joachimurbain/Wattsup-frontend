@@ -42,7 +42,7 @@ export default class StoreMeterCreateComponent {
 			return;
 		}
 
-		this.meterService.create$.next({
+		this.meterService.create({
 			...this.form.value,
 			storeId: this.storeId(),
 		});

@@ -63,14 +63,9 @@ export class StoreHeaderComponent {
 		{ initialValue: this.router.url }
 	);
 
-	meter = computed(() => {
-		const id = this.meterId();
-		return id ? this.meterService.fullItems()[+id] : null;
-	});
-	store = computed(() => {
-		const id = this.storeId();
-		return id ? this.storeService.fullItems()[+id] : null;
-	});
+	meter = this.meterService.fullItemById(this.meterId);
+
+	store = this.storeService.fullItemById(this.storeId);
 
 	constructor() {
 		effect(() => {

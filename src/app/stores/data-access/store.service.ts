@@ -12,13 +12,4 @@ export class StoreService extends EntityStateService<Store> {
 	constructor(httpClient: HttpClient) {
 		super(httpClient, 'Store');
 	}
-	protected override mapFromApi(store: Store): Store {
-		return {
-			...store,
-			meters: store.meters!.map((m) => ({
-				...m,
-				lastReading: new Date(m.lastReading + 'Z'),
-			})),
-		};
-	}
 }
