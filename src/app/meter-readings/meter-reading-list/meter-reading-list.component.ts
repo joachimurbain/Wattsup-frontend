@@ -32,7 +32,6 @@ export default class MeterReadingsComponent {
 
 	readings = computed(() => {
 		const meterId = this.meterId();
-		console.log(this.meterService.fullItems());
 		return meterId ? this.meterReadingService.readingsByMeter()[meterId] : [];
 	});
 

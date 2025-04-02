@@ -6,11 +6,19 @@ import { environment } from '../../../environments/environment';
 import { Meter } from '../../meters/data-access/meter.model';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root',
 })
 export class StoreService extends EntityStateService<Store> {
 	constructor(httpClient: HttpClient) {
 		super(httpClient, 'Store');
 	}
+	protected override mapFromApi(store: Store): Store {
+		return {
+			...store,
+			meters: store.meters!.map((m) => ({
+				...m,
+				lastReading: new Date(m.lastReading + 'Z'),
+			})),
+		};
+	}
 }
-

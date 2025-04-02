@@ -67,6 +67,8 @@ import { BehaviorSubject } from 'rxjs';
 						<p-button severity="info" icon="pi pi-ellipsis-v" class=" p-button-sm" (click)="menu.toggle($event)" />
 						}
 					</td>
+					} @case ('lastReading') {
+					<td>{{ rowData[col.field] | date : 'dd/MM/YYYY HH:MM' }}</td>
 					} @default {
 					<td>{{ rowData[col.field] }}</td>
 					} } }
