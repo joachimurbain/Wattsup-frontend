@@ -50,11 +50,11 @@ export abstract class EntityStateService<
 	// ────────────────────────────────
 	public readonly summaries = computed(() => this.state().summaries);
 	public readonly fullItems = computed(() => this.state().fullItems);
-	public readonly fullItemById = (idSignal: Signal<number | null | undefined>) =>
+	public readonly fullItemById = (idSignal: Signal<number | string | null | undefined>) =>
 		computed(() => {
 			const id = idSignal();
 			if (id == null) return undefined;
-			return this.fullItems()[id];
+			return this.fullItems()[+id];
 		});
 
 	public readonly created = this._created.asReadonly();
@@ -80,7 +80,7 @@ export abstract class EntityStateService<
 					next: (items) => {
 						this.state.update((state) => ({
 							...state,
-							summaries: items.map((item) => this.mapFromApi(item)),
+							summaries: items,
 						}));
 					},
 					error: (err) => {
@@ -110,7 +110,7 @@ export abstract class EntityStateService<
 							...state,
 							fullItems: {
 								...state.fullItems,
-								[item.id]: this.mapFromApi(item),
+								[item.id]: item,
 							},
 						}));
 					},
@@ -139,7 +139,7 @@ export abstract class EntityStateService<
 							...state,
 							fullItems: {
 								...state.fullItems,
-								[createdItem.id]: this.mapFromApi(createdItem),
+								[createdItem.id]: createdItem,
 							},
 							summaries: state.summaries.map((s) => (s.id === createdItem.id ? this.mapToSummary(createdItem) : s)),
 						}));
@@ -176,7 +176,7 @@ export abstract class EntityStateService<
 							...state,
 							fullItems: {
 								...state.fullItems,
-								[updatedItem.id]: this.mapFromApi(updatedItem),
+								[updatedItem.id]: updatedItem,
 							},
 							summaries: state.summaries.map((s) => (s.id === updatedItem.id ? this.mapToSummary(updatedItem) : s)),
 						}));
@@ -273,9 +273,6 @@ export abstract class EntityStateService<
 	//  Overridable Hook
 	// ────────────────────────────────
 
-	protected mapFromApi(item: T): T {
-		return item;
-	}
 	protected mapToSummary(item: T): TLight {
 		return item as unknown as TLight;
 	}
