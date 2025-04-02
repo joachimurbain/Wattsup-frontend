@@ -1,9 +1,11 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { MenuItem } from 'primeng/api';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { filter, map, startWith, switchMap } from 'rxjs';
 import { StoreService } from '../../data-access/store.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MeterService } from '../../../meters/data-access/meter.service';
 
 @Component({
 	selector: 'app-store-header',
@@ -30,70 +32,62 @@ export class StoreHeaderComponent {
 	private router = inject(Router);
 	private route = inject(ActivatedRoute);
 	private storeService = inject(StoreService);
+	private meterService = inject(MeterService);
 
-	private storeId = signal<number | null>(null);
-	private meterId = signal<string | null>(null);
-	private url = signal<string>('');
+	storeId$ = this.route.paramMap.pipe(map((params) => params.get('storeId')));
 
+	private paramMap$ = this.router.events.pipe(
+		filter((e) => e instanceof NavigationEnd),
+		startWith(null), // emit initial value on load
+		map(() => {
+			let r = this.route;
+			while (r.firstChild) {
+				r = r.firstChild;
+			}
+			return r;
+		}),
+		switchMap((r) => r.paramMap)
+	);
+
+	// Convert paramMap values to signals
+	storeId = toSignal(this.storeId$, { initialValue: null });
+	meterId = toSignal(this.paramMap$.pipe(map((p) => p.get('meterId'))), { initialValue: null });
+
+	// URL signal if you still want it
+	url = toSignal(
+		this.router.events.pipe(
+			filter((e) => e instanceof NavigationEnd),
+			startWith(null),
+			map(() => this.router.url)
+		),
+		{ initialValue: this.router.url }
+	);
+
+	meter = computed(() => {
+		const id = this.meterId();
+		return id ? this.meterService.fullItems()[+id] : null;
+	});
 	store = computed(() => {
 		const id = this.storeId();
-		if (id !== null) {
-			return this.storeService.fullItems()[id] ?? null;
-		}
-		return null;
+		return id ? this.storeService.fullItems()[+id] : null;
 	});
 
 	constructor() {
-		this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
-			this.updateRouteState();
+		effect(() => {
+			console.log('storeId signal:', this.storeId());
 		});
-
-		// Also run immediately for hard refresh / direct link
-		this.updateRouteState();
 	}
 
-	private updateRouteState(): void {
-		const allParams = this.collectAllParams();
-		const storeId = allParams.get('storeId');
-		const meterId = allParams.get('meterId');
-
-		this.storeId.set(storeId ? Number(storeId) : null);
-		this.meterId.set(meterId ?? null);
-		this.url.set(this.router.url);
-	}
-
-	private collectAllParams(): Map<string, string> {
-		const params = new Map<string, string>();
-		let current: ActivatedRoute | null = this.route;
-
-		while (current) {
-			const snapshot = current.snapshot.paramMap;
-
-			for (const key of snapshot.keys) {
-				const value = snapshot.get(key);
-				if (value !== null && !params.has(key)) {
-					params.set(key, value);
-				}
-			}
-
-			current = current.parent;
-		}
-
-		return params;
-	}
-
-	readonly breadcrumbItems = computed<MenuItem[]>(() => this.buildBreadcrumbItems());
-
-	private buildBreadcrumbItems(): MenuItem[] {
-		const items: MenuItem[] = [{ label: 'Stores', routerLink: '/stores' }];
+	breadcrumbItems = computed<MenuItem[]>(() => {
 		const store = this.store();
+		const meter = this.meter();
 		const url = this.url();
-		const storeId = this.storeId();
-		const meterId = this.meterId();
+		this.meterService.fullItems();
+		const items: MenuItem[] = [{ label: 'Stores', routerLink: '/stores' }];
 
 		const add = (label: string, path: string) => {
-			if (storeId !== null) {
-				items.push({ label, routerLink: `/stores/${storeId}/${path}` });
+			if (store) {
+				items.push({ label, routerLink: `/stores/${store.id}/${path}` });
 			}
 		};
 
@@ -109,11 +103,10 @@ export class StoreHeaderComponent {
 
 		if (url.includes('/meters')) {
 			add('Meters', 'meters');
-
-			if (url.endsWith('/new')) {
+			if (meter) {
+				items.push({ label: `${meter.type}` });
+			} else if (url.endsWith('/new')) {
 				items.push({ label: 'New' });
-			} else if (meterId) {
-				items.push({ label: `#${meterId}` });
 			}
 		}
 
@@ -131,5 +124,5 @@ export class StoreHeaderComponent {
 		}
 
 		return items;
-	}
+	});
 }

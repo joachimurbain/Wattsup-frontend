@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { storeResolver } from './resolver/store.resolver';
+import { meterResolver } from '../meters/resolver/meter.resolver';
 
 export const STORE_ROUTES: Routes = [
 	{
@@ -41,6 +42,7 @@ export const STORE_ROUTES: Routes = [
 			},
 			{
 				path: 'meters/:meterId',
+				resolve: { meter: meterResolver },
 				loadComponent: () => import('../meter-readings/meter-reading-list/meter-reading-list.component'),
 			},
 		],

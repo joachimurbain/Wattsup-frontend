@@ -23,7 +23,7 @@ export class MeterService extends EntityStateService<Meter> {
 	});
 
 	constructor(httpClient: HttpClient) {
-		super(httpClient, 'store');
+		super(httpClient, 'meter');
 
 		this.getByStoreId$
 			.pipe(

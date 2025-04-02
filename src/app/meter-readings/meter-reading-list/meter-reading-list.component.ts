@@ -6,6 +6,7 @@ import { map } from 'rxjs';
 import { MeterReading } from '../data-access/meter-reading.model';
 import { MeterReadingService } from '../data-access/meter-reading.service';
 import { MenuItem } from 'primeng/api';
+import { MeterService } from '../../meters/data-access/meter.service';
 
 @Component({
 	selector: 'app-meter-readings',
@@ -25,16 +26,13 @@ import { MenuItem } from 'primeng/api';
 export default class MeterReadingsComponent {
 	private route = inject(ActivatedRoute);
 	meterReadingService = inject(MeterReadingService);
+	meterService = inject(MeterService);
 
-	meterId = toSignal(
-		this.route.paramMap.pipe(
-			// grab the meterId from the route
-			map((params) => Number(params.get('meterId')))
-		)
-	);
+	meterId = toSignal(this.route.paramMap.pipe(map((params) => Number(params.get('meterId')))));
 
 	readings = computed(() => {
 		const meterId = this.meterId();
+		console.log(this.meterService.fullItems());
 		return meterId ? this.meterReadingService.readingsByMeter()[meterId] : [];
 	});
 
