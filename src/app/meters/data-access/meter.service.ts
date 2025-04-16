@@ -1,64 +1,59 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, signal } from '@angular/core';
 import { EntityStateService } from '../../core/data-access/entity-state.service';
 import { HttpClient } from '@angular/common/http';
 import { Meter } from './meter.model';
 import { environment } from '../../../environments/environment';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { switchMap, EMPTY, BehaviorSubject } from 'rxjs';
+import { switchMap, EMPTY, BehaviorSubject, finalize } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class MeterService extends EntityStateService<Meter> {
-	getByStoreId$ = new BehaviorSubject<number | null>(null);
-	currentStoreId = signal<number | null>(null);
+	private readonly _loadByStoreId = signal<number | null>(null);
 
-	metersOfCurrentStore = computed(() => {
-		const id = this.currentStoreId();
-		if (id === null) {
-			return [];
-		}
+	// Cache of meters grouped by store ID
+	private readonly _metersByStore = signal<Record<number, Meter[]>>({});
 
-		return Object.values(this.fullItems()).filter((m) => m.storeId === id);
-	});
+	// Selector to get meters for any store
+	public readonly metersByStore = (storeId: number) => computed(() => this._metersByStore()[storeId] ?? []);
 
-	constructor(httpClient: HttpClient) {
-		super(httpClient, 'meter');
+	constructor(http: HttpClient) {
+		super(http, 'meter');
 
-		this.getByStoreId$
-			.pipe(
-				takeUntilDestroyed(),
-				switchMap((storeId) => {
-					if (storeId === null) {
-						return EMPTY;
-					}
+		// Load meters for store when requested
+		effect(() => {
+			const storeId = this._loadByStoreId();
+			if (storeId == null) {
+				return;
+			}
+			const url = `${environment.apiUrl}store/${storeId}/meters`;
 
-					this.currentStoreId.set(storeId);
-					const url = `${environment.apiUrl}store/${storeId}/meters`;
+			this.isLoading.set(true);
+			this.error.set(null);
 
-					return this.httpClient.get<Meter[]>(url);
-				})
-			)
-			.subscribe({
-				next: (meters) => {
-					const newItems = Object.fromEntries(meters.map((m) => [m.id, m]));
+			this.httpClient
+				.get<Meter[]>(url)
+				.pipe(finalize(() => this.isLoading.set(false)))
+				.subscribe({
+					next: (meters) => {
+						this._metersByStore.update((prev) => ({
+							...prev,
+							[storeId]: meters,
+						}));
+					},
+					error: (err) => {
+						console.error(err);
+						this.error.set('Failed to load meters');
+					},
+				});
 
-					this.state.update((state) => ({
-						...state,
-						fullItems: {
-							...state.fullItems,
-							...newItems,
-						},
-						error: null,
-					}));
-				},
-				error: (err) => {
-					console.error(err);
-					this.state.update((s) => ({
-						...s,
-						error: 'Failed to load meters',
-					}));
-				},
-			});
+			this._loadByStoreId.set(null); // reset trigger
+		});
+	}
+
+	// Public trigger
+	public loadMetersForStore(storeId: number) {
+		this._loadByStoreId.set(storeId);
 	}
 }

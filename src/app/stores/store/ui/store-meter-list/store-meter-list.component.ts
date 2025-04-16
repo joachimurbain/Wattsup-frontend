@@ -35,7 +35,7 @@ export default class StoreMeterListComponent {
 	params = toSignal(this.route.parent!.paramMap);
 	storeId = computed(() => Number(this.params()?.get('storeId')));
 	isCreateDialogOpen = signal(false);
-	meters = computed(() => this.meterService.metersOfCurrentStore());
+	meters = this.meterService.metersByStore(this.storeId());
 
 	columns: PTableColumn[] = [
 		{ field: 'type', header: 'Type' },
@@ -47,9 +47,11 @@ export default class StoreMeterListComponent {
 	constructor() {
 		effect(() => {
 			if (this.storeId()) {
-				this.meterService.getByStoreId$.next(this.storeId());
+				this.meterService.loadMetersForStore(this.storeId());
 			}
 		});
+
+		effect(() => console.log(this.meters()));
 	}
 
 	createNew() {
