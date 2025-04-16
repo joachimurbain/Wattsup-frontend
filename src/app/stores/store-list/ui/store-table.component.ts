@@ -10,7 +10,7 @@ import { MessageModule } from 'primeng/message';
 	selector: 'app-store-table',
 	imports: [TableModule, NgClass, ButtonModule, MessageModule],
 	template: `
-		<p-table [columns]="columns()" [value]="stores()" [paginator]="true" [rows]="10">
+		<p-table [columns]="columns()" [value]="stores()" [paginator]="true" [rows]="10" [rowHover]="true">
 			<ng-template #header let-columns>
 				<tr>
 					@for (col of columns; track $index) {
@@ -24,7 +24,7 @@ import { MessageModule } from 'primeng/message';
 					<!-- prettier-ignore -->
 					@case ('status'){
 					<td>
-						{{rowData.isActive}}
+						<!-- {{rowData.isActive}} -->
 						<p-message [severity]="rowData.isActive ? 'success' : 'warn'" size="small" styleClass="statusCol">{{
 							rowData.isActive ? 'Active' : 'Inactive'
 						}}</p-message>
