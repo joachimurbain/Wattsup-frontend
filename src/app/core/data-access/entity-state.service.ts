@@ -53,7 +53,9 @@ export abstract class EntityStateService<
 	public readonly fullItemById = (idSignal: Signal<number | string | null | undefined>) =>
 		computed(() => {
 			const id = idSignal();
-			if (id == null) return undefined;
+			if (id == null) {
+				return undefined;
+			}
 			return this.fullItems()[+id];
 		});
 
@@ -155,7 +157,7 @@ export abstract class EntityStateService<
 
 		effect(() => {
 			if (this.created()) {
-				this._created.set(null); // reset for next trigger
+				queueMicrotask(() => this._created.set(null)); // reset for next trigger
 			}
 		});
 
@@ -193,7 +195,7 @@ export abstract class EntityStateService<
 
 		effect(() => {
 			if (this.updated()) {
-				this._updated.set(null); // reset for next trigger
+				queueMicrotask(() => this._updated.set(null)); // reset for next trigger
 			}
 		});
 
@@ -233,7 +235,7 @@ export abstract class EntityStateService<
 
 		effect(() => {
 			if (this.deleted()) {
-				this._deleted.set(null);
+				queueMicrotask(() => this._deleted.set(null)); // reset for next trigger
 			}
 		});
 
