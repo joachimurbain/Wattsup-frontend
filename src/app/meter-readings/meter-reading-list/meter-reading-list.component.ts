@@ -3,7 +3,7 @@ import { MeterReadingTableComponent } from './ui/meter-reading-table.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
-import { MeterReading } from '../data-access/meter-reading.model';
+import { CreateMeterReading, MeterReading } from '../data-access/meter-reading.model';
 import { MeterReadingService } from '../data-access/meter-reading.service';
 import { MenuItem } from 'primeng/api';
 import { MeterService } from '../../meters/data-access/meter.service';
@@ -13,9 +13,11 @@ import { MeterService } from '../../meters/data-access/meter.service';
 	imports: [MeterReadingTableComponent],
 	template: `
 		<app-meter-reading-table
+			[loading]="meterReadingService.isLoading()"
 			[readings]="readings()"
 			[columns]="columns()"
-			(edit)="this.meterReadingService.update($event)"
+			(createNew)="$event.meterId = meterId()!; meterReadingService.create($event)"
+			(edit)="meterReadingService.update($event)"
 			(delete)="meterReadingService.delete($event.id)"
 		/>
 	`,

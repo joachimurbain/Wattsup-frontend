@@ -17,7 +17,17 @@ import { DialogModule } from 'primeng/dialog';
 			</p-dialog>
 		</div>
 	`,
-	styles: ``,
+	styles: [
+		`
+			::ng-deep .p-dialog .p-dialog-header {
+				background-color: #f9fafb;
+				border-top-left-radius: 0.75rem; /* Match Tailwind's rounded-xl */
+				border-top-right-radius: 0.75rem;
+				border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+				margin-bottom: 1rem;
+			}
+		`,
+	],
 })
 export class ModalComponent {
 	title = input.required<string>();
