@@ -4,8 +4,8 @@ export interface Meter extends BaseEntity {
 	uuid: string;
 	type: MeterType;
 	deactivationDate: Date | null;
-	lastReading: Date;
-	QrCode: string;
+	lastReading: Date | null;
+	qrCode: string;
 	storeId: Number;
 }
 

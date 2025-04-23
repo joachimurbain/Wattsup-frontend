@@ -51,7 +51,12 @@ export default class StoreMeterListComponent {
 			}
 		});
 
-		effect(() => console.log(this.meters()));
+		effect(() => {
+			const created = this.meterService.created();
+			if (created && created.storeId === this.storeId()) {
+				this.meterService.loadMetersForStore(this.storeId());
+			}
+		});
 	}
 
 	createNew() {
@@ -69,11 +74,11 @@ export default class StoreMeterListComponent {
 	}
 
 	downloadQr(meter: Meter) {
-		throw new Error('Method not implemented.');
-
 		const link = document.createElement('a');
-		link.href = meter.QrCode;
+		link.href = meter.qrCode;
 		link.download = `${meter.uuid}.png`;
+		document.body.appendChild(link);
 		link.click();
+		document.body.removeChild(link);
 	}
 }
